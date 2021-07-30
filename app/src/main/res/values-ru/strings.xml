@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Учебное приложение</string>
+    <string name="hello_world_string">Привет, мир еее еееее еееееееее еееееее еееее ееее ееееееееее еееееее еееее еее ее!!!</string>
+
+
+    <string name="full_text">Нажимая на эту кнопку, вы соглашаетесь с моими условиями, политикой конфиденциальности, а также правилами использования приложения</string>
+
+    <string name="conditions_text">моими условиями</string>
+    <string name="rules_text">правилами использования</string>
+    <string name="privacy_policy_text">политикой конфиденциальности</string>
+
+
+</resources>

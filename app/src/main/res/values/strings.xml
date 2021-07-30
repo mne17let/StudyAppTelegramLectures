@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">StudyApp</string>
+    <string name="hello_world_string"><![CDATA[<HTML></HTML>Hello World еее еееее еееееееее еееееее еееее ееее ееееееееее еееееее еееее еее ее!!!]]></string>
+
+
+    <string name="full_text">By pressing on this button you agree with my conditions and rules of use also with privacy policy</string>
+
+    <string name="conditions_text">my conditions</string>
+    <string name="rules_text">rules</string>
+    <string name="privacy_policy_text">privacy policy</string>
+
+
+</resources>
