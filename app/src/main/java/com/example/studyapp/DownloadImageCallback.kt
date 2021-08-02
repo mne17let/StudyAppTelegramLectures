@@ -1,8 +1,10 @@
 package com.example.studyapp
 
+import android.graphics.Bitmap
+
 interface DownloadImageCallback {
 
-    fun success()
+    fun success(bitmap: Bitmap)
 
     fun failed()
 }
