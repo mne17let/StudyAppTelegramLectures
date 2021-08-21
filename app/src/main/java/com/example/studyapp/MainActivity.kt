@@ -1,16 +1,17 @@
 package com.example.studyapp
 
+import android.app.Dialog
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.Drawable
-import android.os.Build
+import android.os.*
 import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
 import android.text.*
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.util.Patterns.EMAIL_ADDRESS
+import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
@@ -20,6 +21,7 @@ import androidx.core.content.res.ResourcesCompat
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.RequestManager
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -30,6 +32,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var editText: TextInputEditText
     private lateinit var buttonCheckEmail: Button
     private lateinit var checkBox: CheckBox
+    private lateinit var progressBar: ProgressBar
+    private lateinit var linearWithContent: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,6 +51,8 @@ class MainActivity : AppCompatActivity() {
         buttonCheckEmail = findViewById(R.id.id_button_check_email)
         checkBox = findViewById(R.id.id_checkbox)
         buttonCheckEmail.isEnabled = false
+        progressBar = findViewById(R.id.id_progressbar)
+        linearWithContent = findViewById(R.id.id_linear_with_content)
     }
 
     fun setEditText(){
@@ -86,6 +92,9 @@ class MainActivity : AppCompatActivity() {
         buttonCheckEmail.setOnClickListener{
             if (EMAIL_ADDRESS.matcher(editText.text.toString()).matches()){
                 Snackbar.make(buttonCheckEmail, "Успешный вход", Snackbar.LENGTH_SHORT).show()
+                linearWithContent.visibility = View.GONE
+                progressBar.visibility = View.VISIBLE
+                startHandler()
             } else {
                 inputLayout.isErrorEnabled = true
                 inputLayout.error = "Некорректная почта"
@@ -101,6 +110,35 @@ class MainActivity : AppCompatActivity() {
         checkBox.setOnCheckedChangeListener{ first, isChecked ->
             buttonCheckEmail.isEnabled = isChecked
         }
+    }
+
+    fun startHandler(){
+
+        val myRunnable: Runnable = object : Runnable{
+            override fun run() {
+                linearWithContent.visibility = View.VISIBLE
+                progressBar.visibility = View.GONE
+
+                val dialog: Dialog = BottomSheetDialog(this@MainActivity)
+                val viewForDialog = LayoutInflater.from(this@MainActivity)
+                    .inflate(R.layout.dialog, linearWithContent, false)
+
+                dialog.setCancelable(false)
+
+                val closeDialogButton = viewForDialog.findViewById<ImageButton>(R.id.id_button_close_dialog)
+
+                closeDialogButton.setOnClickListener {
+                    dialog.dismiss()
+                }
+
+                dialog.setContentView(viewForDialog)
+                dialog.show()
+            }
+
+        }
+
+        val handler: Handler = Handler(Looper.myLooper()!!)
+        handler.postDelayed(myRunnable, 2000)
     }
 }
 

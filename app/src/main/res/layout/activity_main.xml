@@ -1,52 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_height="wrap_content"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:hint="Ваша почта"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-        android:layout_margin="5dp"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
 
-        android:id="@+id/id_input_layout">
+        android:id="@+id/id_linear_with_content">
 
-        <com.google.android.material.textfield.TextInputEditText
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:hint="Ваша почта"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            android:layout_margin="5dp"
+
+            android:id="@+id/id_input_layout">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+
+                android:id="@+id/id_email_edittext"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <CheckBox
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textEmailAddress"
+            android:text="@string/full_text"
+            android:layout_margin="5dp"
+            android:buttonTint="@color/black"
 
-            android:id="@+id/id_email_edittext"/>
+            android:id="@+id/id_checkbox"/>
 
-    </com.google.android.material.textfield.TextInputLayout>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:text="Готово"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
 
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
+            android:id="@+id/id_button_check_email"/>
 
-    <CheckBox
-        android:layout_width="match_parent"
+    </LinearLayout>
+
+    <ProgressBar
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/full_text"
-        android:layout_margin="5dp"
-        android:buttonTint="@color/black"
+        android:layout_gravity="center"
+        android:visibility="invisible"
 
-        android:id="@+id/id_checkbox"/>
+        android:id="@+id/id_progressbar" />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:text="Готово"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-
-        android:id="@+id/id_button_check_email"/>
-
-</LinearLayout>
+</FrameLayout>
 
 
 <!--
