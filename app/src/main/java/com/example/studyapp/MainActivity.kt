@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.text.*
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
+import android.util.Log
 import android.util.Patterns.EMAIL_ADDRESS
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +29,8 @@ import com.google.android.material.textfield.TextInputLayout
 
 class MainActivity : AppCompatActivity() {
 
+    private val TAG = "MainActivity"
+
     private lateinit var inputLayout: TextInputLayout
     private lateinit var editText: TextInputEditText
     private lateinit var buttonCheckEmail: Button
@@ -35,14 +38,73 @@ class MainActivity : AppCompatActivity() {
     private lateinit var progressBar: ProgressBar
     private lateinit var linearWithContent: LinearLayout
 
+    private val newTextWatcher = object : AbstractTextWatcher(){
+        override fun afterTextChanged(s: Editable?) {
+            Log.d(TAG, "изменён текст на $s")
+            if (s.toString().endsWith("@g")){
+                s?.append("mail.com")
+            }
+
+            val valid = android.util.Patterns.EMAIL_ADDRESS.matcher(s.toString()).matches()
+            inputLayout.isErrorEnabled = !valid
+            val errorText = if (valid) "" else "Введите корректный почтовый адрес"
+            inputLayout.error = errorText
+            if (valid){
+                Toast.makeText(this@MainActivity, "Почта введена верно", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    private companion object{
+        const val INITIAL = 0
+        const val PROGRESS = 1
+        const val SUCCESS = 2
+        const val FAILED = 3
+    }
+
+    private var state: Int = INITIAL
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        savedInstanceState?.apply {
+            state = getInt("Состояние экрана")
+        }
+
+
+
+        Log.d(TAG, "onCreate. State = $state. bundle = $savedInstanceState")
+
         setContentView(R.layout.activity_main)
 
         init()
+
+        when (state){
+            FAILED -> showDialog()
+            SUCCESS -> {
+                Snackbar.make(buttonCheckEmail, "Успешный вход", Snackbar.LENGTH_SHORT).show()
+                state = INITIAL
+            }
+        }
+
         setEditText()
         setButton()
         setCheckbox()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        editText.addTextChangedListener(newTextWatcher)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        editText.removeTextChangedListener(newTextWatcher)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putInt("Состояние экрана", state)
     }
 
     fun init(){
@@ -72,8 +134,9 @@ class MainActivity : AppCompatActivity() {
             }
         })*/
 
-        editText.listenTextChanges {
+        /*editText.listenTextChanges {
             textEditableType ->
+            Log.d(TAG, "изменён текст на $textEditableType")
             if (textEditableType.toString().endsWith("@g")){
                 textEditableType?.append("mail.com")
             }
@@ -85,7 +148,7 @@ class MainActivity : AppCompatActivity() {
             if (valid){
                 Toast.makeText(this@MainActivity, "Почта введена верно", Toast.LENGTH_SHORT).show()
             }
-        }
+        }*/
     }
 
     fun setButton(){
@@ -94,6 +157,7 @@ class MainActivity : AppCompatActivity() {
                 Snackbar.make(buttonCheckEmail, "Успешный вход", Snackbar.LENGTH_SHORT).show()
                 linearWithContent.visibility = View.GONE
                 progressBar.visibility = View.VISIBLE
+                state = PROGRESS
                 startHandler()
             } else {
                 inputLayout.isErrorEnabled = true
@@ -116,23 +180,12 @@ class MainActivity : AppCompatActivity() {
 
         val myRunnable: Runnable = object : Runnable{
             override fun run() {
+                state = FAILED
+
                 linearWithContent.visibility = View.VISIBLE
                 progressBar.visibility = View.GONE
 
-                val dialog: Dialog = BottomSheetDialog(this@MainActivity)
-                val viewForDialog = LayoutInflater.from(this@MainActivity)
-                    .inflate(R.layout.dialog, linearWithContent, false)
-
-                dialog.setCancelable(false)
-
-                val closeDialogButton = viewForDialog.findViewById<ImageButton>(R.id.id_button_close_dialog)
-
-                closeDialogButton.setOnClickListener {
-                    dialog.dismiss()
-                }
-
-                dialog.setContentView(viewForDialog)
-                dialog.show()
+                showDialog()
             }
 
         }
@@ -140,6 +193,25 @@ class MainActivity : AppCompatActivity() {
         val handler: Handler = Handler(Looper.myLooper()!!)
         handler.postDelayed(myRunnable, 2000)
     }
+
+    private fun showDialog() {
+        val dialog: Dialog = BottomSheetDialog(this@MainActivity)
+        val viewForDialog = LayoutInflater.from(this@MainActivity)
+            .inflate(R.layout.dialog, linearWithContent, false)
+
+        dialog.setCancelable(false)
+
+        val closeDialogButton = viewForDialog.findViewById<ImageButton>(R.id.id_button_close_dialog)
+
+        closeDialogButton.setOnClickListener {
+            state = INITIAL
+            dialog.dismiss()
+        }
+
+        dialog.setContentView(viewForDialog)
+        dialog.show()
+    }
+
 }
 
 
